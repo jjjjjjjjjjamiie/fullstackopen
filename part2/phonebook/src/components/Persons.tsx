@@ -1,8 +1,10 @@
 import Person from "./Person.tsx";
 
 const Persons = ({ persons, nameFilter }) => {
-  const namesToShow = persons.filter(person =>
-    person.name.toLowerCase().includes(nameFilter.toLowerCase()))
+  const filter = nameFilter ? nameFilter.toLowerCase() : ''
+  const namesToShow = persons.filter(person => {
+    return person?.name?.toLowerCase().includes(filter);
+  })
 
   return (
     namesToShow.map(person =>
