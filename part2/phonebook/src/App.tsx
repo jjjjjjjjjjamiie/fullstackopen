@@ -2,18 +2,16 @@ import {useEffect, useState} from 'react'
 import Filter from "./components/Filter.tsx";
 import PersonForm from "./components/PersonForm.tsx";
 import Persons from "./components/Persons.tsx";
-import axios from "axios";
+import personService from "./services/persons.ts"
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newPerson, setNewPerson] = useState({ name: '', number: ''})
   const [nameFilter, setNameFilter] = useState('')
 
-  const baseUrl = 'http://localhost:3001/persons'
-
   useEffect(() => {
-    axios
-      .get(baseUrl)
+    personService
+      .getAll()
       .then(response => {
         setPersons(response.data)
       })
@@ -29,17 +27,17 @@ const App = () => {
       return window.alert(`${newPerson.name} is already added to phonebook`)
     }
 
-    if (persons.some(person => person.name === newPerson.name)) {
-      return window.alert(`${newPerson.name} is already added to phonebook`)
-    }
-
-    setPersons([...persons, {
-      id: persons.length + 1,
+    const newPersonTemp = {
       name: newPerson.name,
       number: newPerson.number
-    }])
+    }
 
-    setNewPerson({ name: '', number: ''})
+    personService
+      .create(newPersonTemp)
+      .then(response => {
+        setPersons(persons.concat(response.data))
+        setNewPerson({ name: '', number: ''})
+      })
   }
 
   const handleAddName = (event) => {
