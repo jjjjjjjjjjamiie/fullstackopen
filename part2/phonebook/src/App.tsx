@@ -56,6 +56,16 @@ const App = () => {
 
   const handleNameFilter = (event) => setNameFilter(event.target.value)
 
+  const deletePerson = (id) => {
+    const person = persons.find(p => p.id === id)
+    if (!person) return window.alert(`Person not found`)
+
+    if (window.confirm(`Delete ${person.name}?`)) {
+       personService
+        .deleteNumber(person.id)
+        .then(setPersons(persons.filter(p => p.id !== id)))
+    }
+  }
   return (
     <div>
       <h2>Phonebook</h2>
@@ -63,7 +73,7 @@ const App = () => {
       <h2>add a new</h2>
       <PersonForm addPerson={addPerson} handleAddName={handleAddName} handleAddNumber={handleAddNumber} newPerson={newPerson}/>
       <h2>Numbers</h2>
-      <Persons persons={persons} nameFilter={nameFilter} />
+      <Persons persons={persons} nameFilter={nameFilter} deletePerson={deletePerson} />
     </div>
   )
 }
