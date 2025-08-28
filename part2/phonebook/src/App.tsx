@@ -23,21 +23,31 @@ const App = () => {
     if (!newPerson.name.trim()) return window.alert('No name entered')
     if (!newPerson.number.trim()) return window.alert('No number entered')
 
-    if (persons.some(person => person.name === newPerson.name)) {
-      return window.alert(`${newPerson.name} is already added to phonebook`)
-    }
-
     const newPersonTemp = {
       name: newPerson.name,
       number: newPerson.number
     }
 
-    personService
-      .create(newPersonTemp)
-      .then(response => {
-        setPersons(persons.concat(response.data))
-        setNewPerson({ name: '', number: ''})
-      })
+    if (persons.some(person => person.name === newPerson.name)) {
+      const personToUpdate = persons.find(person => person.name === newPerson.name)
+      const updateConfirmed = window.confirm(`${personToUpdate.name} is already added to phonebook, replace the old number with a new one?`);
+      
+      if (updateConfirmed) {
+        personService
+          .update(personToUpdate.id, newPersonTemp)
+          .then(response => {
+            setPersons(persons.map(person => personToUpdate.id === person.id ? response.data : person))
+            setNewPerson({ name: '', number: ''})
+          })
+      }
+    } else {
+      personService
+        .create(newPersonTemp)
+        .then(response => {
+          setPersons(persons.concat(response.data))
+          setNewPerson({ name: '', number: ''})
+        })
+    }
   }
 
   const handleAddName = (event) => {
@@ -57,7 +67,7 @@ const App = () => {
   const handleNameFilter = (event) => setNameFilter(event.target.value)
 
   const deletePerson = (id) => {
-    const person = persons.find(p => p.id === id)
+    const person = persons.find(person => person.id === id)
     if (!person) return window.alert(`Person not found`)
 
     if (window.confirm(`Delete ${person.name}?`)) {
