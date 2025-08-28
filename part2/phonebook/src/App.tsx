@@ -20,34 +20,32 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
 
-    if (!newPerson.name.trim()) return window.alert('No name entered')
-    if (!newPerson.number.trim()) return window.alert('No number entered')
+    const { name, number } = newPerson
 
-    const newPersonTemp = {
-      name: newPerson.name,
-      number: newPerson.number
-    }
+    if (!name.trim()) return window.alert('No name entered')
+    if (!number.trim()) return window.alert('No number entered')
 
-    if (persons.some(person => person.name === newPerson.name)) {
-      const personToUpdate = persons.find(person => person.name === newPerson.name)
-      const updateConfirmed = window.confirm(`${personToUpdate.name} is already added to phonebook, replace the old number with a new one?`);
-      
-      if (updateConfirmed) {
-        personService
-          .update(personToUpdate.id, newPersonTemp)
-          .then(response => {
-            setPersons(persons.map(person => personToUpdate.id === person.id ? response.data : person))
-            setNewPerson({ name: '', number: ''})
-          })
-      }
+    const existingPerson = persons.find(person => person.name === name)
+    const updateConfirmed = window.confirm(`${existingPerson.name} is already added to phonebook, replace the old number with a new one?`)
+
+    if (existingPerson && updateConfirmed) {
+      personService
+        .update(existingPerson.id, { name, number })
+        .then(response => {
+          setPersons(prevState =>
+            prevState.map(person =>
+              existingPerson.id === person.id ? response.data : person)
+          )
+        })
     } else {
       personService
         .create(newPersonTemp)
         .then(response => {
           setPersons(persons.concat(response.data))
-          setNewPerson({ name: '', number: ''})
         })
     }
+
+    setNewPerson({ name: '', number: ''})
   }
 
   const handleAddName = (event) => {
@@ -73,7 +71,7 @@ const App = () => {
     if (window.confirm(`Delete ${person.name}?`)) {
        personService
         .deleteNumber(person.id)
-        .then(setPersons(persons.filter(p => p.id !== id)))
+        .then(setPersons(prevState => prevState.filter(p => p.id !== id)))
     }
   }
   return (
