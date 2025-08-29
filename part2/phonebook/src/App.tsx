@@ -28,15 +28,16 @@ const App = () => {
     const existingPerson = persons.find(person => person.name === name)
     if (existingPerson) {
       const updateConfirmed = window.confirm(`${existingPerson?.name} is already added to phonebook, replace the old number with a new one?`)
-    if (existingPerson && updateConfirmed) {
-      personService
-        .update(existingPerson.id, { name, number })
-        .then(response => {
-          setPersons(prevState =>
-            prevState.map(person =>
-              existingPerson.id === person.id ? response.data : person)
-          )
-        })
+      if (updateConfirmed) {
+        personService
+          .update(existingPerson.id, { name, number })
+          .then(response => {
+            setPersons(prevState =>
+              prevState.map(person =>
+                existingPerson.id === person.id ? response.data : person)
+            )
+          })
+      }
     } else {
       personService
         .create(newPerson)
