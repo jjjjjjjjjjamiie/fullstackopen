@@ -26,8 +26,8 @@ const App = () => {
     if (!number.trim()) return window.alert('No number entered')
 
     const existingPerson = persons.find(person => person.name === name)
-    const updateConfirmed = window.confirm(`${existingPerson.name} is already added to phonebook, replace the old number with a new one?`)
-
+    if (existingPerson) {
+      const updateConfirmed = window.confirm(`${existingPerson?.name} is already added to phonebook, replace the old number with a new one?`)
     if (existingPerson && updateConfirmed) {
       personService
         .update(existingPerson.id, { name, number })
@@ -39,7 +39,7 @@ const App = () => {
         })
     } else {
       personService
-        .create(newPersonTemp)
+        .create(newPerson)
         .then(response => {
           setPersons(persons.concat(response.data))
         })
@@ -74,6 +74,7 @@ const App = () => {
         .then(setPersons(prevState => prevState.filter(p => p.id !== id)))
     }
   }
+
   return (
     <div>
       <h2>Phonebook</h2>
