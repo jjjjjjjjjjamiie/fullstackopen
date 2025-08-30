@@ -1,25 +1,21 @@
 import Country from "./Country.tsx";
 
-const Countries = ({ countries, countryFilter }) => {
+const Countries = ({ countries, details, toggleDetails }) => {
+  if (countries.length === 0) return <div>No matches.</div>
+  if (countries.length > 10) return <div>Too many matches, specify another filter.</div>
+  if (countries.length === 1) return <Country country={countries[0]}/>
 
-  const filter = countryFilter ? countryFilter.toLowerCase() : ''
-  if (filter === '') return
-
-  const countriesToShow = countries.filter(country => {
-    return country?.name?.common?.toLowerCase().includes(filter)
-  })
-
-  if (countriesToShow.length > 10) {
-    return <div>Too many matches specify another filter</div>
-  } else if (countriesToShow.length === 1) {
-    return (countriesToShow.map(country =>
-      <Country country={country}/>
+  return (
+    countries.map(country => (
+      <div>
+        {country.name.common} {' '}
+        <button onClick={() => toggleDetails(country.cca3)}>{details === country.cca3 ? 'hide' : 'show'}</button>
+      {details === country.cca3 && (
+        <Country country={country}/>
+      )}
+      </div>
     ))
-  } else {
-    return (countriesToShow.map(country =>
-      <div>{country.name.common}</div>
-    ))
-  }
+    )
 }
 
 export default Countries

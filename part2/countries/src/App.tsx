@@ -1,27 +1,41 @@
 import axios from "axios";
 import {useEffect, useState} from "react";
 import Countries from "./components/Countries.tsx";
-import Filter from "./components/Filter.tsx";
 
 const App = () => {
   const [countries, setCountries] = useState([])
-  const [countryFilter, setCountryFilter] = useState('')
+  const [filter, setFilter] = useState('')
+  const [details, setDetails] = useState(null)
 
   useEffect(() => {
     const baseUrl = 'https://studies.cs.helsinki.fi/restcountries/api/'
     axios
       .get(`${baseUrl}all`)
-      .then(response => {
+      .then(response =>
         setCountries(response.data)
-      })
+      )
   }, [])
 
-  const handleCountryFilter = (event) => setCountryFilter(event.target.value)
+  const handleFilter = (event) => {
+    setFilter(event.target.value);
+    setDetails(null)
+  }
+
+  const filtered = countries.filter(country =>
+    country.name?.common?.toLowerCase().includes(filter.toLowerCase())
+  )
+
+  const toggleDetails = (cca3) => {
+    setDetails(prevState => (prevState === cca3 ? null : cca3))
+  }
 
   return (
     <>
-      <Filter countryFilter={handleCountryFilter}/>
-      <Countries countries={countries} countryFilter={countryFilter}/>
+      <label>
+        find countries{' '}
+        <input value={filter} onChange={handleFilter}/>
+      </label>
+      <Countries countries={filtered} details={details} toggleDetails={toggleDetails}/>
     </>
   )
 }
