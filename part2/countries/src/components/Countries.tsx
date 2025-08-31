@@ -11,7 +11,7 @@ const Countries = ({ countries, details, toggleDetails }) => {
         {country.name.common} {' '}
         <button onClick={() => toggleDetails(country.cca3)}>{details === country.cca3 ? 'hide' : 'show'}</button>
       {details === country.cca3 && (
-        <Country country={country}/>
+        <Country key={country.cca3} country={country}/>
       )}
       </div>
     ))

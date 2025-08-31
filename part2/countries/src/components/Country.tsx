@@ -1,3 +1,5 @@
+import Weather from './Weather.tsx'
+
 const Country = ({ country }) => {
   const countryLanguages = Object.values(country.languages)
   return (
@@ -13,6 +15,8 @@ const Country = ({ country }) => {
           ))}
       </ul>
       <img src={country.flags.png} />
+      {country.capital &&
+      <Weather country={country}/>}
     </>
   )
 }

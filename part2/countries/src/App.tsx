@@ -25,9 +25,7 @@ const App = () => {
     country.name?.common?.toLowerCase().includes(filter.toLowerCase())
   )
 
-  const toggleDetails = (cca3) => {
-    setDetails(prevState => (prevState === cca3 ? null : cca3))
-  }
+  const toggleDetails = (cca3) => setDetails(prevState => (prevState === cca3 ? null : cca3))
 
   return (
     <>
