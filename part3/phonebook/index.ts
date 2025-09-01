@@ -41,22 +41,22 @@ app.get('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
-  if (!body.name) {
+  if (!body.name || !body.number) {
     return response.status(400).json({
-      error: 'Name missing'
+      error: 'Content missing'
     })
   }
 
-  if (!body.number) {
+  if (persons.find(p => p.name === body.name)) {
     return response.status(400).json({
-      error: 'Number missing'
+      error: 'Person already exists'
     })
   }
 
   const person = {
+    id: Math.floor(Math.random() * 1000000),
     name: body.name,
     number: body.number,
-    id: Math.floor(Math.random() * 1000000),
   }
 
   persons = persons.concat(person)
