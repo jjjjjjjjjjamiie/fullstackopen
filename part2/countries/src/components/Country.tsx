@@ -10,9 +10,9 @@ const Country = ({ country }) => {
 
         <h2>Languages</h2>
         <ul>
-        {countryLanguages.map((language, index) => (
+        {countryLanguages.map((language, index) =>
           <li key={index}>{language}</li>
-          ))}
+          )}
       </ul>
       <img src={country.flags.png} />
       {country.capital &&

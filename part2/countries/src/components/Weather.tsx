@@ -12,9 +12,8 @@ const Weather = ({ country }) => {
       .get(url)
       .then(response => {
         setWeather(response.data)
-        console.log(response.data)
       })
-  }, [country.latlng])
+  }, [country])
 
   if (!weather) return <p>Loading weather...</p>
 
@@ -22,7 +21,7 @@ const Weather = ({ country }) => {
     <>
       <h2>Weather in {country.capital} </h2>
       <p>Temperature {weather.current.temp} °C</p>
-      <img src={`https://openweathermap.org/img/wn/${weather.current.weather.icon}@2x.png`}
+      <img src={`https://openweathermap.org/img/wn/${weather.current.weather[0].icon}@2x.png`}
            alt={weather.current.weather.description}/>
       <p>Wind: {weather.current.wind_speed} m/s</p>
     </>
