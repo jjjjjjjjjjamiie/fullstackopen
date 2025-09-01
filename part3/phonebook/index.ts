@@ -1,8 +1,11 @@
 import express from 'express'
 import morgan from 'morgan'
 import * as process from "node:process";
+import cors from 'cors'
+
 
 const app = express()
+app.use(cors())
 app.use(express.json())
 morgan.token('response-body', (request, response) => JSON.stringify(request.body))
 
