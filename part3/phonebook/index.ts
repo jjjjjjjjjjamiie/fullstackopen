@@ -7,8 +7,10 @@ import cors from 'cors'
 const app = express()
 app.use(cors())
 app.use(express.json())
-morgan.token('response-body', (request, response) => JSON.stringify(request.body))
+app.use(express.static('dist'))
 
+morgan.token('response-body', (request, response) =>
+  JSON.stringify(request.body))
 app.use(
   morgan(`:method :url :status :res[content-length] - :response-time ms :response-body`, {
     skip: (request, response) => request.method !== 'POST'
