@@ -1,0 +1,27 @@
+{
+  "name": "phonebook",
+  "version": "0.0.1",
+  "main": "index.ts",
+  "scripts": {
+    "start": "tsx index.ts",
+    "dev": "tsx --watch index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jjjjjjjjjjamiie/fullstackopen.git"
+  },
+  "author": "Jamie Nevin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jjjjjjjjjjamiie/fullstackopen/issues"
+  },
+  "homepage": "https://github.com/jjjjjjjjjjamiie/fullstackopen#readme",
+  "description": "",
+  "devDependencies": {
+    "tsx": "^4.20.5"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
