@@ -40,20 +40,14 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  if (persons.find(p => p.name === body.name)) {
-    return response.status(400).json({
-      error: 'Person already exists'
-    })
-  }
-
-  const person = {
-    id: Math.floor(Math.random() * 1000000),
+  const person = new Person({
     name: body.name,
-    number: body.number,
-  }
+    number: body.number
+  })
 
-  persons = persons.concat(person)
-  response.json(person)
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
