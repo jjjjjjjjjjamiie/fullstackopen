@@ -17,12 +17,6 @@ app.use(
   })
 )
 
-const password = process.argv[2]
-const personName = process.argv[3]
-const personNumber = process.argv[4]
-
-Person = mongoose.model('Person', personSchema)
-
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(person => {
     response.json(person)
