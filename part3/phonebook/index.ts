@@ -4,8 +4,8 @@ config()
 import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
-import Person from './models/person'
 
+const Person = require('./models/person')
 const app = express()
 app.use(cors())
 app.use(express.json())
