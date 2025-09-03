@@ -40,13 +40,31 @@ app.post('/api/persons', (request, response, next) => {
     })
   }
 
-  Person.findOneAndUpdate(
-    {name: body.name},
-    {number: body.number},
-    {new: true, upsert: true}
+  const person = new Person({
+    name: body.name,
+    number: body.number
+  })
+
+  person.save()
+    .then(savedPerson => response.json(savedPerson))
+    .catch(error => next(error))
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  if (!body.number) {
+    return response.status(400).json({error: 'number missing'})
+  }
+
+  Person.findByIdAndUpdate(
+    request.params.id,
+    {number: body.number}
   )
-    .then(person => {
-      response.json(person)
+    .then(updatedPerson => {
+      updatedPerson
+        ? response.json(updatedPerson)
+        : response.status(404).end()
     })
     .catch(error => next(error))
 })
