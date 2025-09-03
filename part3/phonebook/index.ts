@@ -96,7 +96,7 @@ app.get('/info', (_, response) => {
   })
 })
 
-const errorHandler = (error, response, next) => {
+const errorHandler = (error, _, response, next) => {
   console.error(error.message)
 
   if (error.name === 'CastError') {
