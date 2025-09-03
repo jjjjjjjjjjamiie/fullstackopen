@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 mongoose.set('strictQuery', false)
 
@@ -6,7 +6,7 @@ const url = process.env.MONGODB_URI
 
 console.log('connecting to', url)
 mongoose.connect(url)
-  .then(result => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch(error => {
@@ -23,8 +23,8 @@ const personSchema = new mongoose.Schema({
     type: String,
     minlength: 8,
     validate: {
-      validator: value => value === "^\d{2,3}-\d+$",
-      message: "Not a valid phone number"
+      validator: value => value === '^\d{2,3}-\d+$',
+      message: 'Not a valid phone number'
     },
     required: true
   }

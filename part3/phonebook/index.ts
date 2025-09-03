@@ -1,27 +1,29 @@
-require('dotenv').config()
+import {config} from 'dotenv'
+
+config()
 import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
+import Person from './models/person'
 
-const Person = require('./models/person')
 const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(express.static('dist'))
 
-morgan.token('response-body', (request, response) =>
+morgan.token('response-body', (request) =>
   JSON.stringify(request.body))
 app.use(
   morgan(`:method :url :status :res[content-length] - :response-time ms :response-body`, {
-    skip: (request, response) => request.method !== 'POST'
+    skip: (request) => request.method !== 'POST'
   })
 )
 
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (response) => {
   Person.find({}).then(person => {
     response.json(person)
   })
-});
+})
 
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
@@ -67,23 +69,25 @@ app.put('/api/persons/:id', (request, response, next) => {
     {new: true, runValidators: true, context: 'query'}
   )
     .then(updatedPerson => {
-      updatedPerson
-        ? response.json(updatedPerson)
-        : response.status(404).end()
+      if (updatedPerson) {
+        response.json(updatedPerson)
+      } else {
+        response.status(404).end()
+      }
     })
     .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
 })
 
-app.get('/info', (request, response) => {
-  let now = new Date().toUTCString();
+app.get('/info', (response) => {
+  const now = new Date().toUTCString()
   Person.find({}).then(person => {
     response.send(`
     <p>Phonebook has info for ${person.length} people</p>
@@ -92,7 +96,7 @@ app.get('/info', (request, response) => {
   })
 })
 
-const errorHandler = (error, request, response, next) => {
+const errorHandler = (error, response, next) => {
   console.error(error.message)
 
   if (error.name === 'CastError') {
