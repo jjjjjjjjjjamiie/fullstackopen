@@ -66,6 +66,10 @@ const App = () => {
           }, 5000)
           setPersons(persons.concat(response.data))
         })
+        .catch(error => {
+          setNotificationType('error')
+          setNotificationMessage(error.response.data.error)
+        })
     }
 
     setNewPerson({ name: '', number: ''})
