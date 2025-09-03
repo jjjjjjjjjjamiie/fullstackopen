@@ -31,7 +31,7 @@ app.get('/api/persons/:id', (request, response) => {
     response.status(404).end()
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if (!body.name || !body.number) {
@@ -40,14 +40,15 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  const person = new Person({
-    name: body.name,
-    number: body.number
-  })
-
-  person.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
+  Person.findOneAndUpdate(
+    {name: body.name},
+    {number: body.number},
+    {new: true, upsert: true}
+  )
+    .then(person => {
+      response.json(person)
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response) => {
