@@ -84,10 +84,12 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.get('/info', (request, response) => {
   let now = new Date().toUTCString();
-  response.send(`
-    <p>Phonebook has info for ${persons.length} people</p>
+  Person.find({}).then(person => {
+    response.send(`
+    <p>Phonebook has info for ${person.length} people</p>
     <p>${now}</p>
-`)
+    `)
+  })
 })
 
 const errorHandler = (error, request, response, next) => {
