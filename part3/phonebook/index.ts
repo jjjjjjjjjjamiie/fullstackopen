@@ -19,7 +19,7 @@ app.use(
   })
 )
 
-app.get('/api/persons', (response) => {
+app.get('/api/persons', (_, response) => {
   Person.find({}).then(person => {
     response.json(person)
   })
@@ -86,7 +86,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.get('/info', (response) => {
+app.get('/info', (_, response) => {
   const now = new Date().toUTCString()
   Person.find({}).then(person => {
     response.send(`
