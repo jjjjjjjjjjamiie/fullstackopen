@@ -1,0 +1,22 @@
+sequenceDiagram
+    participant user
+    participant browser
+    participant server
+
+    user->>browser: input note and click save button
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+    server-->>browser: 302 Found - Location: /notes
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    server-->>browser: 200 OK - HTML
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    server-->>browser: 200 OK - CSS
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    server-->>browser: 200 OK - JS
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    server-->>browser: 200 OK - JSON
+
+    Note over browser: Renders new list of notes

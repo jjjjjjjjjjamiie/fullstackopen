@@ -1,0 +1,8 @@
+sequenceDiagram
+    participant user
+    participant browser
+    participant server
+
+    user->>browser: input note and click save button
+    browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa with JSON body
+    server-->>browser: 201 Created - JSON

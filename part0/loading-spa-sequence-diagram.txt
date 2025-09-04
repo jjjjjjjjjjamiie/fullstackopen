@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa
+    server-->>browser: 200 OK - HTML
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    server-->>browser: 200 OK - CSS
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+    server-->>browser: 200 OK - JS
+
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    server-->>browser: 200 OK - JSON
+
+    Note over browser: Renders new list of notes without reload
