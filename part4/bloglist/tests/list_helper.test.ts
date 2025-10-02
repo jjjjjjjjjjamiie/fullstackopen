@@ -99,3 +99,19 @@ describe('favourite blog', () => {
     assert.deepStrictEqual(result, [])
   })
 })
+
+describe('most blogs', () => {
+  test('return list of authors and number of blogs', () => {
+    const result = listHelper.mostBlogs(blogs)
+    const expected = {
+      author: 'Robert C. Martin',
+      blogs: 3
+    }
+    assert.deepStrictEqual(result[0], expected)
+  })
+
+  test('when list is empty, return empty object', () => {
+    const result = listHelper.mostBlogs([])
+    assert.deepStrictEqual(result, {})
+  })
+})

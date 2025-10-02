@@ -10,4 +10,20 @@ const favouriteBlogs = (blogs) => {
   }, 0);
   return blogs.filter(blog => blog.likes === reduce)[0] ?? []
 }
-export default {dummy, totalLikes, favouriteBlogs}
+
+const mostBlogs = (blogs) => {
+  if (blogs.length === 0) return {}
+
+  const authorMap = new Map<string, number>()
+
+  blogs.forEach(blog => {
+    authorMap.set(blog.author, (authorMap.get(blog.author) ?? 0) + 1)
+  })
+
+  const maxCount = Math.max(...authorMap.values())
+  return Array.from(authorMap.entries())
+    .filter(([_, count]) => count === maxCount)
+    .map(([author, count]) => ({author, blogs: count}))
+}
+
+export default {dummy, totalLikes, favouriteBlogs, mostBlogs}
