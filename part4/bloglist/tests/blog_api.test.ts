@@ -46,6 +46,27 @@ test('unique identifier of blog posts is correctly named id', async () => {
   assert.ok(result)
 })
 
+test('successfully create new blog post', async () => {
+  const newBlog = {
+    title: 'My beautiful wife',
+    author: 'Jamie Nevin',
+    url: 'website.com',
+    likes: 19958,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const titles = response.body.map(r => r.title)
+
+  assert.strictEqual(response.body.length, initialBlogs.length + 1)
+  assert(titles.includes('My beautiful wife'))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
