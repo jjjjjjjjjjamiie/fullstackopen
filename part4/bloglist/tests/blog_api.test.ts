@@ -67,6 +67,25 @@ test('successfully create new blog post', async () => {
   assert(titles.includes('My beautiful wife'))
 })
 
+test('new blog post defaults to 0 likes if property missing', async () => {
+  const newBlogWithoutLikes = {
+    title: 'My beautiful wife',
+    author: 'Jamie Nevin',
+    url: 'website.com',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogWithoutLikes)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const newPost = response.body.find(r => r.title === newBlogWithoutLikes.title)
+
+  assert.strictEqual(newPost.likes, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
