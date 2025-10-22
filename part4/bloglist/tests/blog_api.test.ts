@@ -86,6 +86,38 @@ test('new blog post defaults to 0 likes if property missing', async () => {
   assert.strictEqual(newPost.likes, 0)
 })
 
+test('new blog post returns 400 if title property missing', async () => {
+  const newBlogWithoutTitle = {
+    author: 'Jamie Nevin',
+    url: 'website.com',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogWithoutTitle)
+    .expect(400)
+
+  const response = await api.get('/api/blogs')
+
+  assert.strictEqual(response.body.length, initialBlogs.length)
+})
+
+test('new blog post returns 400 if url property missing', async () => {
+  const newBlogWithoutUrl = {
+    title: 'My beautiful wife',
+    author: 'Jamie Nevin',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogWithoutUrl)
+    .expect(400)
+
+  const response = await api.get('/api/blogs')
+
+  assert.strictEqual(response.body.length, initialBlogs.length)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
