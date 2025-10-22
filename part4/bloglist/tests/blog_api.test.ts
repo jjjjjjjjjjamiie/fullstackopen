@@ -36,6 +36,16 @@ test('correct number of blogs is returned', async () => {
   assert.strictEqual(response.body.length, initialBlogs.length)
 })
 
+test('unique identifier of blog posts is correctly named id', async () => {
+  const response = await api.get('/api/blogs')
+  const result =
+    Object
+      .keys(response.body[0])
+      .find(key => key === 'id');
+
+  assert.ok(result)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
