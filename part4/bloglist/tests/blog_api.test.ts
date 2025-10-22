@@ -2,9 +2,9 @@ import {test, after, beforeEach} from 'node:test'
 import mongoose from 'mongoose'
 import supertest from 'supertest'
 import app from '../app'
-import assert from 'node:assert';
+import assert from 'node:assert'
 import helper from './test_helper'
-import Blog from "../models/blog";
+import Blog from '../models/blog'
 
 const api = supertest(app)
 
@@ -24,7 +24,7 @@ test('unique identifier of blog posts is correctly named id', async () => {
   const result =
     Object
       .keys(response.body[0])
-      .find(key => key === 'id');
+      .find(key => key === 'id')
 
   assert.ok(result)
 })
@@ -117,8 +117,8 @@ test('a blog post can be deleted', async () => {
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
 })
 
-test('when id not found in database returns 404', async () => {
-  const invalidId = new mongoose.Types.ObjectId();
+test('when delete attempted but id not found in database returns 404', async () => {
+  const invalidId = new mongoose.Types.ObjectId()
 
   await api
     .delete(`/api/blogs/${invalidId}`)
@@ -127,6 +127,73 @@ test('when id not found in database returns 404', async () => {
   const blogsAtEnd = await helper.blogsInDb()
 
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+})
+
+test('a blog post can update number of likes', async () => {
+  const blogsBeforeUpdate = await helper.blogsInDb()
+  const blogToUpdate = blogsBeforeUpdate[0]
+
+  const requestBody = {
+    title: blogToUpdate.title,
+    author: blogToUpdate.author,
+    url: blogToUpdate.url,
+    likes: blogToUpdate.likes + 1,
+  }
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(requestBody)
+    .expect(200)
+
+  const blogAfterUpdate = await Blog.findById(blogToUpdate.id)
+
+  assert.strictEqual(blogAfterUpdate.likes, blogToUpdate.likes + 1)
+})
+
+test('a blog post can update title and url', async () => {
+  const blogsBeforeUpdate = await helper.blogsInDb()
+  const blogToUpdate = blogsBeforeUpdate[0]
+  const newTitle = 'new title'
+  const newUrl = 'new url'
+
+  const requestBody = {
+    title: newTitle,
+    author: blogToUpdate.author,
+    url: newUrl,
+    likes: blogToUpdate.likes,
+  }
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(requestBody)
+    .expect(200)
+
+  const blogAfterUpdate = await Blog.findById(blogToUpdate.id)
+
+  assert.strictEqual(blogAfterUpdate.title, newTitle)
+  assert.strictEqual(blogAfterUpdate.url, newUrl)
+})
+
+test('when update attempted but id not found in database returns 404', async () => {
+  const blogsBeforeUpdate = await helper.blogsInDb()
+  const blogToUpdate = blogsBeforeUpdate[0]
+  const invalidId = new mongoose.Types.ObjectId();
+
+  const requestBody = {
+    title: blogToUpdate.title,
+    author: blogToUpdate.author,
+    url: blogToUpdate.url,
+    likes: blogToUpdate.likes + 1,
+  }
+
+  await api
+    .put(`/api/blogs/${invalidId}`)
+    .send(requestBody)
+    .expect(404)
+
+  const blogAfterUpdate = await Blog.findById(blogToUpdate.id)
+
+  assert.deepStrictEqual(blogAfterUpdate.toJSON(), blogToUpdate)
 })
 
 after(async () => {
