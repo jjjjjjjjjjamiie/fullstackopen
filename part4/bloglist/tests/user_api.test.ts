@@ -41,6 +41,69 @@ describe('when there is initially one user in db', () => {
     assert(usernames.includes(newUser.username))
   })
 
+  test('adding new user fails if username already taken', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'root',
+      name: 'Jimmy Nuggets',
+      password: 'shhhhh',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+
+    assert(result.body.error.includes('duplicate key error collection'))
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+
+  test('adding new user fails if username too short', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'ba',
+      name: 'Jimmy Nuggets',
+      password: 'shhhhh',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+
+    assert(result.body.error.includes('shorter than the minimum allowed length'))
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+
+  test('adding new user fails if password too short', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const newUser = {
+      username: 'baa',
+      name: 'Jimmy Nuggets',
+      password: 'sh',
+    }
+
+    const result = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAtEnd = await helper.usersInDb()
+
+    assert(result.body.error.includes('Password must be 3 or more characters in length'))
+    assert.strictEqual(usersAtEnd.length, usersAtStart.length)
+  })
+
   after(async () => {
     await mongoose.connection.close()
   })
