@@ -13,7 +13,7 @@ describe('when there is initially one user in db', () => {
   beforeEach(async () => {
     await User.deleteMany({})
 
-    const passwordHash = await bcrypt.hash('sekret', 10)
+    const passwordHash = await bcrypt.hash('secret', 10)
     const user = new User({username: 'root', passwordHash})
 
     await user.save()
@@ -25,7 +25,7 @@ describe('when there is initially one user in db', () => {
     const newUser = {
       username: 'jjamiie',
       name: 'Jimmy Nuggets',
-      password: 'salainen',
+      password: 'shhhhh',
     }
 
     await api
@@ -58,7 +58,7 @@ describe('when there is initially one user in db', () => {
 
     const usersAtEnd = await helper.usersInDb()
 
-    assert(result.body.error.includes('duplicate key error collection'))
+    assert(result.body.error.includes('Username must be unique'))
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })
 
