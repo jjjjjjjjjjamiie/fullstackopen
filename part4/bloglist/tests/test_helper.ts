@@ -1,4 +1,5 @@
-import Blog from "../models/blog";
+import Blog from '../models/blog'
+import User from '../models/user'
 
 const initialBlogs = [
   {
@@ -20,6 +21,11 @@ const blogsInDb = async () => {
   return blogs.map(blog => blog.toJSON())
 }
 
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map(u => u.toJSON())
+}
+
 export default {
-  initialBlogs, blogsInDb
+  initialBlogs, blogsInDb, usersInDb
 }

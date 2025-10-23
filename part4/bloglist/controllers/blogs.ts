@@ -1,5 +1,5 @@
-import Blog from "../models/blog";
-import {Router} from "express";
+import Blog from '../models/blog'
+import {Router} from 'express'
 
 const blogsRouter = Router()
 
@@ -30,7 +30,7 @@ blogsRouter.put('/:id', async (request, response) => {
   if (!updatedBlog) {
     response.status(404).end()
   }
-  
+
   response.status(200).end()
 })
 
