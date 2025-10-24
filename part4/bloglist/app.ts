@@ -7,7 +7,6 @@ import blogsRouter from './controllers/blogs'
 import usersRouter from './controllers/users'
 import loginRouter from './controllers/login'
 
-
 const app = express()
 app.use(express.json())
 
@@ -23,8 +22,8 @@ mongoose
   })
 
 app.use(middleware.requestLogger)
-
 app.use(middleware.tokenExtractor)
+
 app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
