@@ -61,20 +61,20 @@ const App = () => {
     </>
   )
 
+  const blogList = () => (
+    <>
+      <h2>Blogs</h2>
+      <Notification message={`${user.name} logged in`}/>
+      {blogs.map(blog =>
+        <Blog key={blog.id} blog={blog} />
+      )}
+    </>
+  )
+
   return (
     <>
       {!user && loginForm()}
-      {user &&
-        <>
-          <h2>Blogs</h2>
-          <Notification message={`${user.name} logged in`}/>
-          <br/>
-
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
-          )}
-        </>
-      }
+      {user && blogList()}
     </>
   )
 }

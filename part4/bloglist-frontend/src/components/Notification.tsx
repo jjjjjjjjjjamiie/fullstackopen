@@ -4,9 +4,9 @@ const Notification = ({message}) => {
   }
 
   return (
-    <div>
+    <p>
       {message}
-    </div>
+    </p>
   )
 }
 
