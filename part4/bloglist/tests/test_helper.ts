@@ -1,5 +1,11 @@
 import Blog from '../models/blog'
 import User from '../models/user'
+import app from '../app'
+import supertest from 'supertest'
+import {Types} from "mongoose";
+import ObjectId = module
+
+const api = supertest(app)
 
 const initialBlogs = [
   {
@@ -26,6 +32,11 @@ const usersInDb = async () => {
   return users.map(u => u.toJSON())
 }
 
+const login = async (username, password) => {
+  const response = await api.post('/api/login').send({username, password})
+  return response.body.token
+}
+
 export default {
-  initialBlogs, blogsInDb, usersInDb
+  initialBlogs, blogsInDb, usersInDb, login
 }

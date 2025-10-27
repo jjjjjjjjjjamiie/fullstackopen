@@ -87,7 +87,7 @@ describe('when there is initially one user in db', () => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
-      username: 'baa',
+      username: 'baaaaaa',
       name: 'Jimmy Nuggets',
       password: 'sh',
     }
@@ -103,8 +103,8 @@ describe('when there is initially one user in db', () => {
     assert(result.body.error.includes('Password must be 3 or more characters in length'))
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })
+})
 
-  after(async () => {
-    await mongoose.connection.close()
-  })
+after(async () => {
+  await mongoose.connection.close()
 })
