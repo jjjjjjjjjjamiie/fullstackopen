@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react'
+import {useEffect, useState} from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import BlogForm from './components/BlogForm.tsx'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -10,6 +11,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
+  const [newBlog, setNewBlog] = useState({title: '', author: '', url: ''})
 
   useEffect(() => {
     (async () => setBlogs(await blogService.getAll()))()
@@ -77,15 +79,48 @@ const App = () => {
     </>
   )
 
+  const addBlog = async (event) => {
+    event.preventDefault()
+
+    if (user) {
+      const response = await blogService.create(newBlog, user)
+      setBlogs(blogs.concat(response.data))
+    }
+  }
+
+  const handleAddTitle = (event) => {
+    setNewBlog({
+      ...newBlog,
+      title: event.target.value
+    })
+  }
+
+  const handleAddAuthor = (event) => {
+    setNewBlog({
+      ...newBlog,
+      author: event.target.value
+    })
+  }
+
+  const handleAddUrl = (event) => {
+    setNewBlog({
+      ...newBlog,
+      url: event.target.value
+    })
+  }
+
   const blogList = () => (
     <>
       <h2>Blogs</h2>
-        <form onSubmit={handleLogout}>
-          <p>
-            {user.name} logged in
-            <button type="submit" onSubmit={handleLogout}>logout</button>
-          </p>
-        </form>
+      <form onSubmit={handleLogout}>
+        <p>
+          {user.name} logged in
+          <button type="submit">logout</button>
+        </p>
+      </form>
+
+      <BlogForm addBlog={addBlog} handleAddAuthor={handleAddAuthor} handleAddTitle={handleAddTitle} handleAddUrl={handleAddUrl} newBlog={newBlog}/>
+
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}

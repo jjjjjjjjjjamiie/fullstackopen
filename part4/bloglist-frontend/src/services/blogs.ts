@@ -6,4 +6,16 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
-export default { getAll }
+const create = (newObject, user) => {
+  return axios.post(
+    baseUrl,
+    newObject,
+    {
+      headers: {
+        Authorization: `Bearer ${user.token}`
+      }
+    }
+  );
+}
+
+export default { getAll, create }
