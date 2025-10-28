@@ -12,7 +12,15 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs => setBlogs(blogs))
+    (async () => setBlogs(await blogService.getAll()))()
+  }, [])
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+    }
   }, [])
 
   const handleLogin = async (event) => {
@@ -20,6 +28,8 @@ const App = () => {
 
     try {
       const user = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
+
       setUser(user)
       setUsername('')
       setPassword('')
@@ -29,6 +39,12 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const handleLogout = (event) => {
+    event.preventDefault()
+    window.localStorage.removeItem('loggedBloglistUser')
+    setUser(null)
   }
 
   const loginForm = () => (
@@ -64,7 +80,12 @@ const App = () => {
   const blogList = () => (
     <>
       <h2>Blogs</h2>
-      <Notification message={`${user.name} logged in`}/>
+        <form onSubmit={handleLogout}>
+          <p>
+            {user.name} logged in
+            <button type="submit" onSubmit={handleLogout}>logout</button>
+          </p>
+        </form>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
