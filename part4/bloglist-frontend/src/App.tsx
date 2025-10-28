@@ -4,14 +4,16 @@ import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm.tsx'
+import './index.css'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
   const [newBlog, setNewBlog] = useState({title: '', author: '', url: ''})
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [notificationType, setNotificationType] = useState('')
 
   useEffect(() => {
     (async () => setBlogs(await blogService.getAll()))()
@@ -36,10 +38,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      displayNotificationMessage('Wrong credentials', 'error')
     }
   }
 
@@ -49,10 +48,18 @@ const App = () => {
     setUser(null)
   }
 
+  const displayNotificationMessage = (message, type) => {
+    setNotificationType(type)
+    setNotificationMessage(message)
+    setTimeout(() => {
+      setNotificationMessage(null)
+    }, 5000)
+  }
+
   const loginForm = () => (
     <>
       <h2>Log in to application</h2>
-      <Notification message={errorMessage}/>
+      <Notification message={notificationMessage} type={notificationType}/>
       <form onSubmit={handleLogin}>
         <div>
           <label>
@@ -85,6 +92,7 @@ const App = () => {
     if (user) {
       const response = await blogService.create(newBlog, user)
       setBlogs(blogs.concat(response.data))
+      displayNotificationMessage(`New blog ${newBlog.title} by ${newBlog.author} added`, 'success')
     }
   }
 
@@ -112,6 +120,7 @@ const App = () => {
   const blogList = () => (
     <>
       <h2>Blogs</h2>
+      <Notification message={notificationMessage} type={notificationType}/>
       <form onSubmit={handleLogout}>
         <p>
           {user.name} logged in
