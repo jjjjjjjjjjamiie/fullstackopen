@@ -11,7 +11,6 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
-  const [newBlog, setNewBlog] = useState({title: '', author: '', url: ''})
   const [notificationMessage, setNotificationMessage] = useState(null)
   const [notificationType, setNotificationType] = useState('')
 
@@ -86,35 +85,11 @@ const App = () => {
     </>
   )
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-
+  const addBlog = async (blogObject) => {
     if (user) {
-      const response = await blogService.create(newBlog, user)
+      const response = await blogService.create(blogObject, user)
       setBlogs(blogs.concat(response.data))
-      displayNotificationMessage(`New blog ${newBlog.title} by ${newBlog.author} added`, 'success')
     }
-  }
-
-  const handleAddTitle = (event) => {
-    setNewBlog({
-      ...newBlog,
-      title: event.target.value
-    })
-  }
-
-  const handleAddAuthor = (event) => {
-    setNewBlog({
-      ...newBlog,
-      author: event.target.value
-    })
-  }
-
-  const handleAddUrl = (event) => {
-    setNewBlog({
-      ...newBlog,
-      url: event.target.value
-    })
   }
 
   const blogList = () => (
@@ -127,9 +102,7 @@ const App = () => {
           <button type="submit">logout</button>
         </p>
       </form>
-
-      <BlogForm addBlog={addBlog} handleAddAuthor={handleAddAuthor} handleAddTitle={handleAddTitle} handleAddUrl={handleAddUrl} newBlog={newBlog}/>
-
+      <BlogForm  createBlog={addBlog} displayNotificationMessage={displayNotificationMessage}/>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
