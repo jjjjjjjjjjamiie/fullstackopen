@@ -1,6 +1,6 @@
-import {useState} from "react";
+import {useState} from 'react'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog, user, updateBlog }) => {
   const [displayDetails, setDisplayDetails] = useState(false)
 
   const blogStyle = {
@@ -10,10 +10,25 @@ const Blog = ({ blog, user }) => {
     borderWidth: 1,
     marginBottom: 5
   }
+
+  const handleUpdateLikes = async (event) => {
+    event.preventDefault()
+
+    if (user) {
+      const updatedBlog = {
+        ...blog,
+        likes: blog.likes + 1,
+        user: user.id,
+      }
+
+      await updateBlog(blog.id, updatedBlog)
+    }
+  }
+
   const blogDetails = () => (
     <div>
       <div>{blog.url}</div>
-      <div>{blog.likes} <button type="submit">like</button></div>
+      <div>{blog.likes} <button onClick={handleUpdateLikes}>like</button></div>
       <div>{user.name}</div>
     </div>
   )
@@ -26,7 +41,7 @@ const Blog = ({ blog, user }) => {
   return (
     <>
       <div style={blogStyle}>
-        {blog.title} {blog.author} <button type="submit" onClick={handleDisplayDetails}>{displayDetails ? 'hide' : 'view'}</button>
+        {blog.title} {blog.author} <button onClick={handleDisplayDetails}>{displayDetails ? 'hide' : 'view'}</button>
         {displayDetails && blogDetails()}
       </div>
     </>

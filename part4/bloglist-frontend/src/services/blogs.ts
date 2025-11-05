@@ -15,7 +15,22 @@ const create = (newObject, user) => {
         Authorization: `Bearer ${user.token}`
       }
     }
-  );
+  )
 }
 
-export default { getAll, create }
+const updateLikes = async (newObject, user, blogId) => {
+  if (blogId) {
+    const response = await axios.put(
+      `${baseUrl}/${blogId}`,
+      newObject,
+      {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      }
+    )
+    return response.data
+  }
+}
+
+export default { getAll, create, updateLikes }
