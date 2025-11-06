@@ -11,7 +11,7 @@ const Blog = ({ blog, user, updateBlog, removeBlog }) => {
     marginBottom: 5
   }
 
-  const handleUpdateLikes = async (event) => {
+  const handleUpdateLikes = async () => {
     if (user) {
       const updatedBlog = {
         ...blog,
@@ -23,7 +23,7 @@ const Blog = ({ blog, user, updateBlog, removeBlog }) => {
     }
   }
 
-  const handleRemoveBlog = async (event) => {
+  const handleRemoveBlog = async () => {
     if (user) {
       await removeBlog(blog)
     }
@@ -41,8 +41,8 @@ const Blog = ({ blog, user, updateBlog, removeBlog }) => {
     </div>
   )
 
-  const handleDisplayDetails = (event) => {
-    setDisplayDetails(!displayDetails);
+  const handleDisplayDetails = () => {
+    setDisplayDetails(!displayDetails)
   }
 
   return (

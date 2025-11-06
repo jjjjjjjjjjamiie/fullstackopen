@@ -86,9 +86,9 @@ const App = () => {
   )
 
   const addBlog = async (blogObject) => {
-      const response = await blogService.create(blogObject, user)
-      setBlogs(blogs.concat(response.data))
-      displayNotificationMessage(`Successfully added new blog`, 'success')
+    const response = await blogService.create(blogObject, user)
+    setBlogs(blogs.concat(response.data))
+    displayNotificationMessage('Successfully added new blog', 'success')
   }
 
   const updateBlog = async (id, updatedBlog) => {
@@ -121,8 +121,9 @@ const App = () => {
       {[...blogs]
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
-        <Blog key={blog.id} blog={blog} user={user} updateBlog={updateBlog} removeBlog={removeBlog} />
-      )}
+          <Blog key={blog.id} blog={blog} user={user} updateBlog={updateBlog} removeBlog={removeBlog} />
+        )
+      }
     </>
   )
 

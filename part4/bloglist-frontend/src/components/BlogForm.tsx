@@ -1,5 +1,5 @@
-import {useRef, useState} from "react";
-import Togglable from "./Togglable.tsx";
+import {useRef, useState} from 'react'
+import Togglable from './Togglable.tsx'
 
 const BlogForm = ({createBlog, displayNotificationMessage}) => {
   const [newBlog, setNewBlog] = useState({title: '', author: '', url: ''})
