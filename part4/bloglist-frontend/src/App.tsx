@@ -86,15 +86,25 @@ const App = () => {
   )
 
   const addBlog = async (blogObject) => {
-    if (user) {
       const response = await blogService.create(blogObject, user)
       setBlogs(blogs.concat(response.data))
-    }
+      displayNotificationMessage(`Successfully added new blog`, 'success')
   }
 
   const updateBlog = async (id, updatedBlog) => {
     const returnedBlog = await blogService.updateLikes(updatedBlog, user, id)
     setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+    displayNotificationMessage('Successfully updated blog', 'success')
+  }
+
+  const removeBlog = async (blog) => {
+    const blogRemovalConfirmed = window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)
+    if (blogRemovalConfirmed) {
+      const response = await blogService.remove(user, blog.id)
+      console.log('response', response)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
+      displayNotificationMessage(`Successfully removed ${blog.title}`, 'success')
+    }
   }
 
   const blogList = () => (
@@ -111,7 +121,7 @@ const App = () => {
       {[...blogs]
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
-        <Blog key={blog.id} blog={blog} user={user} updateBlog={updateBlog} />
+        <Blog key={blog.id} blog={blog} user={user} updateBlog={updateBlog} removeBlog={removeBlog} />
       )}
     </>
   )

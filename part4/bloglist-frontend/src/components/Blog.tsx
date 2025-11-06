@@ -1,6 +1,6 @@
 import {useState} from 'react'
 
-const Blog = ({ blog, user, updateBlog }) => {
+const Blog = ({ blog, user, updateBlog, removeBlog }) => {
   const [displayDetails, setDisplayDetails] = useState(false)
 
   const blogStyle = {
@@ -12,8 +12,6 @@ const Blog = ({ blog, user, updateBlog }) => {
   }
 
   const handleUpdateLikes = async (event) => {
-    event.preventDefault()
-
     if (user) {
       const updatedBlog = {
         ...blog,
@@ -25,16 +23,25 @@ const Blog = ({ blog, user, updateBlog }) => {
     }
   }
 
+  const handleRemoveBlog = async (event) => {
+    if (user) {
+      await removeBlog(blog)
+    }
+  }
+
   const blogDetails = () => (
     <div>
       <div>{blog.url}</div>
       <div>{blog.likes} <button onClick={handleUpdateLikes}>like</button></div>
       <div>{blog.user.name}</div>
+      {
+        user.id === blog.user.id &&
+        <button onClick={handleRemoveBlog}>remove</button>
+      }
     </div>
   )
 
   const handleDisplayDetails = (event) => {
-    event.preventDefault()
     setDisplayDetails(!displayDetails);
   }
 
