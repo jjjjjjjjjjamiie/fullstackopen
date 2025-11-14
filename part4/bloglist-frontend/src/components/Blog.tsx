@@ -47,8 +47,9 @@ const Blog = ({ blog, user, updateBlog, removeBlog }) => {
 
   return (
     <>
-      <div style={blogStyle}>
-        {blog.title} {blog.author} <button onClick={handleDisplayDetails}>{displayDetails ? 'hide' : 'view'}</button>
+      <div style={blogStyle} className='blog'>
+        {blog.title} {blog.author}
+        <button onClick={handleDisplayDetails}>{displayDetails ? 'hide' : 'view'}</button>
         {displayDetails && blogDetails()}
       </div>
     </>
