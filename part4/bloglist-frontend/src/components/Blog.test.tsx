@@ -1,15 +1,24 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
+import {beforeEach, expect} from 'vitest'
 
-test('renders title and author', () => {
-  const blog = {
+let blog
+
+beforeEach(() => {
+  blog = {
     title: 'Test blog',
     author: 'Test author',
     url: 'Test url',
     likes: 5,
-    user: 'Test user'
+    user: {
+      'id': 'Test userId',
+      'name': 'Test name'
+    }
   }
+})
 
+test('renders title and author', () => {
   const { container } = render(<Blog blog={blog} />)
 
   const div = container.querySelector('.blog')
@@ -20,4 +29,33 @@ test('renders title and author', () => {
   expect(div).toHaveTextContent('Test author')
   expect(urlElement).toBeNull()
   expect(likesElement).toBeNull()
+})
+
+test('renders blog details after clicking button', async () => {
+  render(<Blog blog={blog} user={blog.user.id} />)
+
+  const user = userEvent.setup()
+  const button = screen.getByText('view')
+  await user.click(button)
+
+  const urlElement = screen.getByText('Test url')
+  const likesElement = screen.getByText(5)
+
+  expect(urlElement).toBeVisible()
+  expect(likesElement).toBeVisible()
+})
+
+test('like button calls updateBlog correctly', async () => {
+  const updateBlog = vi.fn()
+  render(<Blog blog={blog} user={blog.user.id} updateBlog={updateBlog} />)
+
+  const user = userEvent.setup()
+  const viewButton = screen.getByText('view')
+  await user.click(viewButton)
+
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+
+  expect(updateBlog).toHaveBeenCalledTimes(2)
 })
