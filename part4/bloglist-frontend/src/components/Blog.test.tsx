@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react'
+import {render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 import {beforeEach, expect} from 'vitest'
+import BlogForm from './BlogForm.tsx'
 
 let blog
 
@@ -58,4 +59,29 @@ test('like button calls updateBlog correctly', async () => {
   await user.click(likeButton)
 
   expect(updateBlog).toHaveBeenCalledTimes(2)
+})
+
+test('Blog form updates parent state and calls onSubmit', async () => {
+  const createBlog = vi.fn()
+  const displayNotificationMessage = vi.fn()
+  render(<BlogForm createBlog={createBlog} displayNotificationMessage={displayNotificationMessage} />)
+  const user = userEvent.setup()
+
+  const newBlogButton = screen.getByText('new blog')
+  await user.click(newBlogButton)
+
+  const titleInput = screen.getByLabelText(/title/i)
+  const authorInput = screen.getByLabelText(/author/i)
+  const urlInput = screen.getByLabelText(/url/i)
+  const sendButton = screen.getByText('create')
+
+  await user.type(titleInput, 'title test')
+  await user.type(authorInput, 'author test')
+  await user.type(urlInput, 'url test')
+  await user.click(sendButton)
+
+  expect(createBlog.mock.calls).toHaveLength(1)
+  expect(createBlog.mock.calls[0][0].title).toBe('title test')
+  expect(createBlog.mock.calls[0][0].author).toBe('author test')
+  expect(createBlog.mock.calls[0][0].url).toBe('url test')
 })
