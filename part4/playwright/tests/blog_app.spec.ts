@@ -37,6 +37,7 @@ describe('Blog app', () => {
   describe('When logged in', () => {
     beforeEach(async ({page}) => {
       await loginWith(page, 'jamie', 'secret')
+      await createTestBlog(page)
     })
 
     test('a new blog can be created', async ({page}) => {
@@ -46,8 +47,6 @@ describe('Blog app', () => {
     })
 
     test('a user can add a like to a blog', async ({page}) => {
-      await createTestBlog(page)
-      
       await page.getByRole('button', {name: 'view'}).click()
       const previousLikes = await page.locator('.blog-likes')
       await page.getByRole('button', {name: 'like'}).click()
@@ -58,8 +57,6 @@ describe('Blog app', () => {
     })
 
     test('a user can remove a blog', async ({page}) => {
-      await createTestBlog(page)
-
       await page.getByRole('button', {name: 'view'}).click()
       await page.on('dialog', dialog => dialog.accept())
       await page.getByRole('button', {name: 'remove'}).click()
@@ -67,10 +64,8 @@ describe('Blog app', () => {
       const successDiv = await page.locator('.success')
       await expect(successDiv).toContainText('Successfully removed test title')
     })
-  })
 
-  describe('When viewing blogs from different login', () => {
-    beforeEach(async ({request}) => {
+    test('another user is unable to view remove button', async ({page, request}) => {
       await request.post('http://localhost:3003/api/users', {
         data: {
           name: 'Different User',
@@ -78,11 +73,6 @@ describe('Blog app', () => {
           password: 'user'
         }
       })
-    })
-
-    test('other user is unable to view remove button', async ({page}) => {
-      await loginWith(page, 'jamie', 'secret')
-      await createTestBlog(page)
 
       await page.getByRole('button', {name: 'logout'}).click()
       await loginWith(page, 'different', 'user')
