@@ -46,14 +46,30 @@ describe('Blog app', () => {
     })
 
     test('a new blog can be created', async ({page}) => {
-      await page.getByRole('button', {name: 'new blog'}).click()
-
-      await page.getByLabel('title').fill('test title')
-      await page.getByLabel('author').fill('test author')
-      await page.getByLabel('url').fill('test url')
-      await page.getByRole('button', {name: 'create'}).click()
+      await createTestBlog(page)
 
       await expect(page.getByText('test title test author')).toBeVisible()
     })
+
+    test('a user can add a like to a blog', async ({page}) => {
+      await createTestBlog(page)
+      
+      await page.getByRole('button', {name: 'view'}).click()
+      const previousLikes = await page.locator('.blog-likes')
+      await page.getByRole('button', {name: 'like'}).click()
+      const newLikes = await page.locator('.blog-likes')
+
+      await expect(previousLikes).toContainText('0')
+      await expect(newLikes).toContainText('1')
+    })
   })
 })
+
+const createTestBlog = async (page) => {
+  await page.getByRole('button', {name: 'new blog'}).click()
+
+  await page.getByLabel('title').fill('test title')
+  await page.getByLabel('author').fill('test author')
+  await page.getByLabel('url').fill('test url')
+  await page.getByRole('button', {name: 'create'}).click()
+}
