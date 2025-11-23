@@ -33,7 +33,8 @@ describe('Blog app', () => {
       await page.getByLabel('password').fill('incorrect')
       await page.getByRole('button', {name: 'login'}).click()
 
-      await expect(page.getByText('Jamie Nevin logged in')).not.toBeVisible()
+      const errorDiv = await page.locator('.error')
+      await expect(errorDiv).toContainText('Wrong credentials')
     })
   })
 
