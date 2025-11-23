@@ -6,6 +6,7 @@ import middleware from './utils/middleware'
 import blogsRouter from './controllers/blogs'
 import usersRouter from './controllers/users'
 import loginRouter from './controllers/login'
+import testingRouter from './controllers/testing'
 
 const app = express()
 app.use(express.json())
@@ -27,6 +28,10 @@ app.use(middleware.tokenExtractor)
 app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
+
+if (process.env.NODE_ENV === 'test') {
+  app.use('/api/testing', testingRouter)
+}
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
