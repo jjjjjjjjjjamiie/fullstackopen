@@ -21,17 +21,13 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({page}) => {
-      await page.getByLabel('username').fill('jamie')
-      await page.getByLabel('password').fill('secret')
-      await page.getByRole('button', {name: 'login'}).click()
+      await loginWith(page, 'jamie', 'secret')
 
       await expect(page.getByText('Jamie Nevin logged in')).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({page}) => {
-      await page.getByLabel('username').fill('jamie')
-      await page.getByLabel('password').fill('incorrect')
-      await page.getByRole('button', {name: 'login'}).click()
+      await loginWith(page, 'jamie', 'incorrect')
 
       const errorDiv = await page.locator('.error')
       await expect(errorDiv).toContainText('Wrong credentials')
@@ -40,9 +36,7 @@ describe('Blog app', () => {
 
   describe('When logged in', () => {
     beforeEach(async ({page}) => {
-      await page.getByLabel('username').fill('jamie')
-      await page.getByLabel('password').fill('secret')
-      await page.getByRole('button', {name: 'login'}).click()
+      await loginWith(page, 'jamie', 'secret')
     })
 
     test('a new blog can be created', async ({page}) => {
@@ -64,6 +58,12 @@ describe('Blog app', () => {
     })
   })
 })
+
+const loginWith = async (page, username, password) => {
+  await page.getByLabel('username').fill(username)
+  await page.getByLabel('password').fill(password)
+  await page.getByRole('button', {name: 'login'}).click()
+}
 
 const createTestBlog = async (page) => {
   await page.getByRole('button', {name: 'new blog'}).click()
