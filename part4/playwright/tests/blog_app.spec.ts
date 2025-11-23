@@ -57,7 +57,7 @@ describe('Blog app', () => {
       await expect(newLikes).toContainText('1')
     })
 
-    test('a user can delete a blog', async ({page}) => {
+    test('a user can remove a blog', async ({page}) => {
       await createTestBlog(page)
 
       await page.getByRole('button', {name: 'view'}).click()
@@ -66,6 +66,30 @@ describe('Blog app', () => {
 
       const successDiv = await page.locator('.success')
       await expect(successDiv).toContainText('Successfully removed test title')
+    })
+  })
+
+  describe('When viewing blogs from different login', () => {
+    beforeEach(async ({request}) => {
+      await request.post('http://localhost:3003/api/users', {
+        data: {
+          name: 'Different User',
+          username: 'different',
+          password: 'user'
+        }
+      })
+    })
+
+    test('other user is unable to view remove button', async ({page}) => {
+      await loginWith(page, 'jamie', 'secret')
+      await createTestBlog(page)
+
+      await page.getByRole('button', {name: 'logout'}).click()
+      await loginWith(page, 'different', 'user')
+
+      await page.getByRole('button', {name: 'view'}).click()
+
+      await expect(await page.getByRole('button', {name: 'remove'})).not.toBeVisible()
     })
   })
 })
