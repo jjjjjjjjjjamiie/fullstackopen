@@ -56,6 +56,17 @@ describe('Blog app', () => {
       await expect(previousLikes).toContainText('0')
       await expect(newLikes).toContainText('1')
     })
+
+    test('a user can delete a blog', async ({page}) => {
+      await createTestBlog(page)
+
+      await page.getByRole('button', {name: 'view'}).click()
+      await page.on('dialog', dialog => dialog.accept())
+      await page.getByRole('button', {name: 'remove'}).click()
+
+      const successDiv = await page.locator('.success')
+      await expect(successDiv).toContainText('Successfully removed test title')
+    })
   })
 })
 
