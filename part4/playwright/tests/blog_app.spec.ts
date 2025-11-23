@@ -37,11 +37,11 @@ describe('Blog app', () => {
   describe('When logged in', () => {
     beforeEach(async ({page}) => {
       await loginWith(page, 'jamie', 'secret')
-      await createTestBlog(page)
+      await createBlog(page, 'test title', 'test author', 'test url')
     })
 
     test('a new blog can be created', async ({page}) => {
-      await createTestBlog(page)
+      await createBlog(page, 'test title', 'test author', 'test url')
 
       await expect(page.getByText('test title test author')).toBeVisible()
     })
@@ -90,11 +90,11 @@ const loginWith = async (page, username, password) => {
   await page.getByRole('button', {name: 'login'}).click()
 }
 
-const createTestBlog = async (page) => {
+const createBlog = async (page, title, author, url) => {
   await page.getByRole('button', {name: 'new blog'}).click()
 
-  await page.getByLabel('title').fill('test title')
-  await page.getByLabel('author').fill('test author')
-  await page.getByLabel('url').fill('test url')
+  await page.getByLabel('title').fill(title)
+  await page.getByLabel('author').fill(author)
+  await page.getByLabel('url').fill(url)
   await page.getByRole('button', {name: 'create'}).click()
 }
