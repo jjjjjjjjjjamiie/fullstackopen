@@ -47,7 +47,7 @@ const Blog = ({ blog, user, updateBlog, removeBlog }) => {
 
   return (
     <>
-      <div style={blogStyle} className='blog'>
+      <div style={blogStyle} className='blog' data-testid="blog">
         {blog.title} {blog.author}
         <button onClick={handleDisplayDetails}>{displayDetails ? 'hide' : 'view'}</button>
         {displayDetails && blogDetails()}

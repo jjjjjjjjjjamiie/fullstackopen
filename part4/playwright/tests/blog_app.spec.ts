@@ -37,7 +37,6 @@ describe('Blog app', () => {
   describe('When logged in', () => {
     beforeEach(async ({page}) => {
       await loginWith(page, 'jamie', 'secret')
-      await createBlog(page, 'test title', 'test author', 'test url')
     })
 
     test('a new blog can be created', async ({page}) => {
@@ -47,6 +46,7 @@ describe('Blog app', () => {
     })
 
     test('a user can add a like to a blog', async ({page}) => {
+      await createBlog(page, 'test title', 'test author', 'test url')
       await page.getByRole('button', {name: 'view'}).click()
       const previousLikes = await page.locator('.blog-likes')
       await page.getByRole('button', {name: 'like'}).click()
@@ -57,6 +57,7 @@ describe('Blog app', () => {
     })
 
     test('a user can remove a blog', async ({page}) => {
+      await createBlog(page, 'test title', 'test author', 'test url')
       await page.getByRole('button', {name: 'view'}).click()
       await page.on('dialog', dialog => dialog.accept())
       await page.getByRole('button', {name: 'remove'}).click()
@@ -66,6 +67,7 @@ describe('Blog app', () => {
     })
 
     test('another user is unable to view remove button', async ({page, request}) => {
+      await createBlog(page, 'test title', 'test author', 'test url')
       await request.post('http://localhost:3003/api/users', {
         data: {
           name: 'Different User',
@@ -80,6 +82,20 @@ describe('Blog app', () => {
       await page.getByRole('button', {name: 'view'}).click()
 
       await expect(await page.getByRole('button', {name: 'remove'})).not.toBeVisible()
+    })
+
+    test('blogs are arranged by descending number of likes', async ({page, request}) => {
+      test.setTimeout(5000)
+
+      await createBlog(page, 'title 1', 'author 1', 'url 1')
+      await createBlog(page, 'title 2', 'author 2', 'url 2')
+      await createBlog(page, 'title 3', 'author 3', 'url 3')
+
+      await likeBlog(page, 'title 1', 'author 1', 1)
+      await likeBlog(page, 'title 2', 'author 2', 2)
+      await likeBlog(page, 'title 3', 'author 3', 3)
+
+      await expectBlogsSortedByLikes(page)
     })
   })
 })
@@ -97,4 +113,49 @@ const createBlog = async (page, title, author, url) => {
   await page.getByLabel('author').fill(author)
   await page.getByLabel('url').fill(url)
   await page.getByRole('button', {name: 'create'}).click()
+  await expect(page.getByText(`New blog ${title} by ${author} added`)).toBeVisible()
 }
+
+
+const blogByTitle = (page, title, author) =>
+  page.locator('[data-testid="blog"]').filter({
+    hasText: `${title} ${author}`,
+  })
+
+const getLikes = async (blogLocator) => {
+  const likesText = await blogLocator.locator('.blog-likes').innerText()
+  return parseInt(likesText.match(/\d+/)[0], 10)
+}
+
+const expandBlog = async (blogLocator) => {
+  const likesLocator = blogLocator.locator('.blog-likes')
+  const isVisible = await likesLocator.isVisible().catch(() => false)
+  if (!isVisible) {
+    await blogLocator.getByRole('button', { name: 'view' }).click()
+    await expect(likesLocator).toBeVisible()
+  }
+  return likesLocator
+}
+
+const likeBlog = async (page, title, author, times) => {
+  for (let i = 0; i < times; i++) {
+    const blog = blogByTitle(page, title, author)
+    const likesLocator = await expandBlog(blog)
+
+    const before = await getLikes(blog)
+
+    await blog.getByRole('button', { name: 'like' }).click()
+
+    await expect(likesLocator).toHaveText(new RegExp(`^${before + 1}`))
+  }
+}
+
+const expectBlogsSortedByLikes = async (page) => {
+  const blogs = page.getByTestId('blog')
+  const likeTexts = await blogs.locator('.blog-likes').allInnerTexts()
+  const likeNumbers = likeTexts.map(text => Number(text.match(/\d+/)[0]))
+  const sorted = [...likeNumbers].sort((a, b) => b - a)
+  expect(likeNumbers).toEqual(sorted)
+}
+
+
