@@ -1,0 +1,35 @@
+{
+  "name": "bloglist",
+  "version": "0.0.1",
+  "description": "application to allow users to save information about interesting blogs ",
+  "main": "index.ts",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production tsx index.ts",
+    "dev": "cross-env NODE_ENV=development tsx --watch index.ts",
+    "test": "cross-env NODE_ENV=test tsx --test",
+    "start:test": "cross-env NODE_ENV=test tsx --watch index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jjjjjjjjjjamiie/fullstackopen.git"
+  },
+  "author": "Jamie Nevin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jjjjjjjjjjamiie/fullstackopen/issues"
+  },
+  "homepage": "https://github.com/jjjjjjjjjjamiie/fullstackopen#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.1",
+    "supertest": "^7.1.4",
+    "tsx": "^4.20.6"
+  }
+}
